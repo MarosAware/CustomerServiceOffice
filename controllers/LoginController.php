@@ -1,5 +1,13 @@
 <?php
 
-$content = new Template('templates/login.tpl');
+require '../src/Template.php';
 
-//Obsługa logowania użytkownika
+//Tutaj dodaj kod
+
+$index = new Template('../templates/index.tpl');
+
+$content = new Template('../templates/login.tpl');
+
+$index->add('content', $content->parse());
+
+echo $index->parse();

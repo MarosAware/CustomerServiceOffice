@@ -1,7 +1,7 @@
 <div class="row" id="content">
     <div class="col-md-4 colHeight">
         <div class="page-header">
-            <h3>Moje Wątki</`h3>
+            <h3>Moje Wątki</h3>
         </div>
         <div>
             <table class="table">

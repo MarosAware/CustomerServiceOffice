@@ -1,5 +1,14 @@
 <?php
 
-$content = new Template('templates/register.tpl');
+require '../src/Template.php';
 
-//Obsługa rejestracji użytkownika
+//Tutaj dodaj kod
+
+$index = new Template('../templates/index.tpl');
+
+$content = new Template('../templates/register.tpl');
+
+$index->add('content', $content->parse());
+
+echo $index->parse();
+

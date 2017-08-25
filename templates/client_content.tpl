@@ -29,7 +29,7 @@
 </div>
 <div class="row">
     <div class="col-md-4">
-        <form class="form-inline">
+        <form class="form-inline" method="post" action="../controllers/ConversationController.php.php">
             <label for="conversationSubject" id="newConvSubject">Temat: <input id="conversationSubject" type="text" placeholder="Temat..."></label>
             <button class="btn">Dodaj...</button>
         </form>
