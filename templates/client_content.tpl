@@ -29,29 +29,9 @@
 </div>
 <div class="row">
     <div class="col-md-4">
-        <form class="form-inline" method="post" action="../controllers/ConversationController.php.php">
+        <form class="form-inline" method="post" action="../controllers/ConversationController.php">
             <label for="conversationSubject" id="newConvSubject">Temat: <input id="conversationSubject" type="text" placeholder="Temat..."></label>
             <button class="btn">Dodaj...</button>
         </form>
-    </div>
-    <div class="col-md-8">
-        <form class="form" enctype="multipart/form-data" method="post">
-            <span class="btn btn-default btn-file"><span>Choose file</span><input name='file' type="file" /></span>
-            <button class="btn">Załącz plik</button>
-        </form>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <div class="page-header">
-            <h3>Pliki:</h3>
-        </div>
-        <table class="table">
-            <tr>
-                <th>Nazwa pliku</th>
-                <th></th>
-            </tr>
-            {{files}}
-        </table>
     </div>
 </div>

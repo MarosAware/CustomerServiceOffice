@@ -48,24 +48,4 @@
             <button class="btn">Dodaj...</button>
         </form>
     </div>
-    <div class="col-md-4 col-md-offset-4">
-        <form class="form">
-            <span class="btn btn-default btn-file"><span>Choose file</span><input type="file" /></span>
-            <button class="btn">Załącz</button>
-        </form>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <div class="page-header">
-            <h3>Pliki:</h3>
-        </div>
-        <table class="table">
-            <tr>
-                <th>Nazwa pliku</th>
-                <th></th>
-            </tr>
-            {{files}}
-        </table>
-    </div>
 </div>
