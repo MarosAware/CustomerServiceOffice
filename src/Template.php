@@ -2,7 +2,6 @@
 
 class Template
 {
-
     protected $template;
     protected $vars = [];
 
@@ -30,7 +29,7 @@ class Template
         return $output;
     }
 
-    static public function joinTemplates($templates)
+    public static function joinTemplates($templates)
     {
         $output = "";
 

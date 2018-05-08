@@ -1,4 +1,5 @@
 <tr>
-    <td>{{messageSender}}</td>
-    <td>{{messageText}}</td>
+    <td>You</td>
+    <td>{{message}}</td>
+    <td>{{creationDate}}</td>
 </tr>

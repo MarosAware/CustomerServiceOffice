@@ -126,22 +126,24 @@ class Conversation
     {
         $tab = [];
         $stmt = self::$dbConn->prepare(
-            "SELECT * FROM `conversation` WHERE clientId=:clientId"
+            "SELECT * FROM `conversation` WHERE clientId=:id ORDER BY id DESC"
         );
 
         $result = $stmt->execute(['id' => $id]);
 
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         if ($result === true && $stmt->rowCount() > 0) {
-            foreach ($result as $dbObj) {
-                $dbObj = $stmt->fetch(PDO::FETCH_OBJ);
-                $loadedConversation = new Conversation();
-                $loadedConversation->id = $dbObj->id;
-                $loadedConversation->clientId = $dbObj->clientId;
-                $loadedConversation->supportId = $dbObj->supportId;
-                $loadedConversation->subject = $dbObj->subject;
-                $tab[] = $loadedConversation;
-            }
-            return $tab;
+            return $rows;
+//            foreach ($rows as $dbObj) {
+//                $loadedConversation = new Conversation();
+//                $loadedConversation->id = $dbObj->id;
+//                $loadedConversation->clientId = $dbObj->clientId;
+//                $loadedConversation->supportId = $dbObj->supportId;
+//                $loadedConversation->subject = $dbObj->subject;
+//                $tab[] = $loadedConversation;
+//            }
+//            return $tab;
         }
         return null;
     }
@@ -150,22 +152,25 @@ class Conversation
     {
         $tab = [];
         $stmt = self::$dbConn->prepare(
-            "SELECT * FROM `conversation` WHERE supportId=:supportId"
+            "SELECT * FROM `conversation` WHERE supportId=:id"
         );
 
         $result = $stmt->execute(['id' => $id]);
 
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         if ($result === true && $stmt->rowCount() > 0) {
-            foreach ($result as $dbObj) {
-                $dbObj = $stmt->fetch(PDO::FETCH_OBJ);
-                $loadedConversation = new Conversation();
-                $loadedConversation->id = $dbObj->id;
-                $loadedConversation->clientId = $dbObj->clientId;
-                $loadedConversation->supportId = $dbObj->supportId;
-                $loadedConversation->subject = $dbObj->subject;
-                $tab[] = $loadedConversation;
-            }
-            return $tab;
+            return $rows;
+
+//            foreach ($rows as $dbObj) {
+//                $loadedConversation = new Conversation();
+//                $loadedConversation->id = $dbObj->id;
+//                $loadedConversation->clientId = $dbObj->clientId;
+//                $loadedConversation->supportId = $dbObj->supportId;
+//                $loadedConversation->subject = $dbObj->subject;
+//                $tab[] = $loadedConversation;
+//            }
+//            return $tab;
         }
         return null;
     }
@@ -183,5 +188,6 @@ class Conversation
         }
         return true;
     }
+
 
 }

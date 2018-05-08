@@ -15,7 +15,7 @@
             <div class="row">
                 <div class="navbar navbar-default">
                     <div class="navbar-header">
-                        <a class="navbar-brand">Biuro Obslugi Klienta</a>
+                        <a href="../controllers/LoginController.php" class="navbar-brand">Biuro Obslugi Klienta</a>
                     </div>
                     {{logout}}
                 </div>
