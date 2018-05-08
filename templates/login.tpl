@@ -14,8 +14,6 @@
             </div>
             <button type="submit" class="btn btn-default">Zaloguj</button>
         </form>
-        <form action="../controllers/RegisterController.php" method="post">
-            <button type="submit" class="btn btn-primary">Załóż konto</button>
-        </form>
+        <a href="../controllers/RegisterController.php" class="btn btn-primary">Załóż konto</a>
     </div>
 </div>

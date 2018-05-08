@@ -17,9 +17,7 @@
                     <div class="navbar-header">
                         <a class="navbar-brand">Biuro Obslugi Klienta</a>
                     </div>
-                    <ul class="nav navbar-nav">
-                        <li><a>Wyloguj się</a></li>
-                    </ul>
+                    {{logout}}
                 </div>
             </div>
             {{content}}
