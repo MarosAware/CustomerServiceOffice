@@ -1,7 +1,16 @@
+a {
+    word-break: break-all;
+}
+
 #content{
     min-height: 60vh;
 }
 
 .colHeight{
     min-height: inherit;
+}
+
+.notRead {
+    color:green;
+    font-weight:700;
 }

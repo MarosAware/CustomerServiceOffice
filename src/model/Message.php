@@ -2,7 +2,7 @@
 
 class Message
 {
-    private $id, $conversationId, $senderId, $message, $creationDate;
+    private $id, $conversationId, $senderId, $message, $creationDate, $isRead;
     public static $dbConn;
 
     public function __construct()
@@ -12,6 +12,7 @@ class Message
         $this->senderId = "";
         $this->message = "";
         $this->setCreationDate();
+        $this->isRead = 0;
     }
 
     public function getId()
@@ -52,7 +53,12 @@ class Message
 
     public function setMessage($message)
     {
-        $this->message = $message;
+        if ($this->isValidMessage($message)) {
+            $message = htmlspecialchars($message);
+            $this->message = $message;
+            return true;
+        }
+        return false;
     }
 
     //DB Method
@@ -60,18 +66,20 @@ class Message
     public function saveToDB()
     {
 
-        if($this->id === -1) {
+        if ($this->id === -1) {
             //nowy wpis
             $stmt = self::$dbConn->prepare(
                 "INSERT INTO `message` 
-                 (`conversationId`, `senderId`, `message`, `creationDate`) VALUES (:conversationId, :senderId, :message, :creationDate)"
+                 (`conversationId`, `senderId`, `message`, `creationDate`, `isRead`) 
+                 VALUES (:conversationId, :senderId, :message, :creationDate, :isRead)"
             );
             $result = $stmt->execute(
                 [
                     'conversationId' => $this->conversationId,
                     'senderId' => $this->senderId,
                     'message' => $this->message,
-                    'creationDate' => $this->creationDate
+                    'creationDate' => $this->creationDate,
+                    'isRead' => $this->isRead
                 ]
             );
 
@@ -83,7 +91,8 @@ class Message
         } else {
             //update
             $stmt = self::$dbConn->prepare(
-                "UPDATE `message` SET `conversationId=:conversationId`, `senderId=:senderId`, `message=:message`, `creationDate=:creationDate` WHERE `id=:id`"
+                "UPDATE `message` SET `conversationId`=:conversationId, `senderId`=:senderId, `message`=:message, 
+              `creationDate`=:creationDate, `isRead`=:isRead WHERE `id`=:id"
             );
 
             $result = $stmt->execute(
@@ -92,6 +101,7 @@ class Message
                     'senderId' => $this->senderId,
                     'message' => $this->message,
                     'creationDate' => $this->creationDate,
+                    'isRead' => $this->isRead,
                     'id' => $this->id
                 ]
             );
@@ -118,6 +128,8 @@ class Message
             $loadedMessage->conversationId = $dbObj->conversationId;
             $loadedMessage->senderId = $dbObj->senderId;
             $loadedMessage->message = $dbObj->message;
+            $loadedMessage->creationDate = $dbObj->creationDate;
+            $loadedMessage->isRead = $dbObj->isRead;
             return $loadedMessage;
         }
         return null;
@@ -125,6 +137,7 @@ class Message
 
     public static function loadAllMessagesByConversationId($id)
     {
+        //$tab = [];
         $stmt = self::$dbConn->prepare(
             "SELECT * FROM `message` WHERE conversationId=:conversationId ORDER BY id DESC"
         );
@@ -133,19 +146,73 @@ class Message
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if ($result === true && $stmt->rowCount() > 0) {
-
             return $rows;
-
-//            $dbObj = $stmt->fetch(PDO::FETCH_OBJ);
-//            $loadedMessage = new Message();
-//            $loadedMessage->id = $dbObj->id;
-//            $loadedMessage->conversationId = $dbObj->conversationId;
-//            $loadedMessage->senderId = $dbObj->senderId;
-//            $loadedMessage->message = $dbObj->message;
-//            return $loadedMessage;
+//            foreach ($rows as $dbObj) {
+//                $loadedMessage = new Message();
+//                $loadedMessage->id = $dbObj->id;
+//                $loadedMessage->conversationId = $dbObj->conversationId;
+//                $loadedMessage->senderId = $dbObj->senderId;
+//                $loadedMessage->message = $dbObj->message;
+//                $loadedMessage->creationDate = $dbObj->creationDate;
+//                $tab[] = $loadedMessage;
+//            }
+//            return $tab;
         }
         return null;
     }
+
+    public static function loadAllMessagesBySenderId($id)
+    {
+        //$tab = [];
+        $stmt = self::$dbConn->prepare(
+            "SELECT * FROM `message` WHERE senderId=:senderId ORDER BY id DESC"
+        );
+
+        $result = $stmt->execute(['senderId' => $id]);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if ($result === true && $stmt->rowCount() > 0) {
+            return $rows;
+//            foreach ($rows as $dbObj) {
+//                $loadedMessage = new Message();
+//                $loadedMessage->id = $dbObj->id;
+//                $loadedMessage->conversationId = $dbObj->conversationId;
+//                $loadedMessage->senderId = $dbObj->senderId;
+//                $loadedMessage->message = $dbObj->message;
+//                $loadedMessage->creationDate = $dbObj->creationDate;
+//                $tab[] = $loadedMessage;
+//            }
+//            return $tab;
+        }
+        return null;
+    }
+
+    public static function loadAllNotReadMsgByConversationId($id)
+    {
+        //$tab = [];
+        $stmt = self::$dbConn->prepare(
+            "SELECT * FROM `message` WHERE conversationId=:conversationId AND isRead = 0"
+        );
+
+        $result = $stmt->execute(['conversationId' => $id]);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if ($result === true && $stmt->rowCount() > 0) {
+            return $rows;
+//            foreach ($rows as $row) {
+//                $loadedMessage = new Message();
+//                $loadedMessage->id = $row['id'];
+//                $loadedMessage->conversationId = $row['conversationId'];
+//                $loadedMessage->senderId = $row['senderId'];
+//                $loadedMessage->message = $row['message'];
+//                $loadedMessage->creationDate = $row['creationDate'];
+//                $tab[] = $loadedMessage;
+//            }
+//            return $tab;
+        }
+        return null;
+    }
+
 
     /*
     public static function loadLastMessageByConversationId($id)
@@ -199,6 +266,36 @@ class Message
         $date = new DateTime($creationDate);
         $date = $date->format('Y-m-d H:i:s');
         $this->creationDate = $date;
+    }
+
+    //Validation Method
+
+    public static function isValidMessage($message)
+    {
+        if (!empty($message) && mb_strlen($message) > 0 && mb_strlen($message) < 255) {
+            return true;
+        }
+        return false;
+    }
+
+    public function getisRead()
+    {
+        return $this->isRead;
+    }
+
+    public function setisRead($isRead)
+    {
+        $this->isRead = $isRead;
+    }
+
+    public function getIsReadSupport()
+    {
+        return $this->isReadSupport;
+    }
+
+    public function setIsReadSupport($isReadSupport)
+    {
+        $this->isReadSupport = $isReadSupport;
     }
 
 

@@ -28,7 +28,11 @@ class Conversation
 
     public function setClientId($clientId)
     {
-        $this->clientId = $clientId;
+        if ($this->isValidId($clientId)) {
+            $this->clientId = $clientId;
+            return true;
+        }
+        return false;
     }
 
 
@@ -40,7 +44,11 @@ class Conversation
 
     public function setSupportId($supportId)
     {
-        $this->supportId = $supportId;
+        if ($this->isValidId($supportId)) {
+            $this->supportId = $supportId;
+            return true;
+        }
+        return false;
     }
 
 
@@ -52,7 +60,12 @@ class Conversation
 
     public function setSubject($subject)
     {
-        $this->subject = $subject;
+        if ($this->isValidSubject($subject)) {
+            $subject = htmlspecialchars($subject);
+            $this->subject = $subject;
+            return true;
+        }
+        return false;
     }
 
     //DB Method
@@ -82,7 +95,7 @@ class Conversation
         } else {
             //update
             $stmt = self::$dbConn->prepare(
-                "UPDATE `conversation` SET `clientId=:clientId`, `supportId=:supportId`, `subject=:subject` WHERE `id=:id`"
+                "UPDATE `conversation` SET `clientId`=:clientId, `supportId`=:supportId, `subject`=:subject WHERE `id`=:id"
             );
 
             $result = $stmt->execute(
@@ -121,16 +134,15 @@ class Conversation
         return null;
     }
 
-    //Not sure it works (foreach and fetch obj)
+    //Load all method load all rows (assoc) and return it
     public static function loadAllConversationByClientId($id)
     {
-        $tab = [];
+        //$tab = [];
         $stmt = self::$dbConn->prepare(
             "SELECT * FROM `conversation` WHERE clientId=:id ORDER BY id DESC"
         );
 
         $result = $stmt->execute(['id' => $id]);
-
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if ($result === true && $stmt->rowCount() > 0) {
@@ -150,18 +162,40 @@ class Conversation
 
     public static function loadAllConversationBySupportId($id)
     {
-        $tab = [];
+        //$tab = [];
         $stmt = self::$dbConn->prepare(
-            "SELECT * FROM `conversation` WHERE supportId=:id"
+            "SELECT * FROM `conversation` WHERE supportId=:id ORDER BY id DESC"
         );
 
         $result = $stmt->execute(['id' => $id]);
-
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if ($result === true && $stmt->rowCount() > 0) {
             return $rows;
+//            foreach ($rows as $dbObj) {
+//                $loadedConversation = new Conversation();
+//                $loadedConversation->id = $dbObj->id;
+//                $loadedConversation->clientId = $dbObj->clientId;
+//                $loadedConversation->supportId = $dbObj->supportId;
+//                $loadedConversation->subject = $dbObj->subject;
+//                $tab[] = $loadedConversation;
+//            }
+//            return $tab;
+        }
+        return null;
+    }
 
+    public static function loadAllOpenConversation()
+    {
+        //$tab = [];
+        $result = self::$dbConn->query(
+            "SELECT * FROM `conversation` WHERE supportId IS NULL ORDER BY id DESC"
+        );
+
+        $rows = $result->fetchAll(PDO::FETCH_ASSOC);
+
+        if ($result->rowCount() > 0) {
+            return $rows;
 //            foreach ($rows as $dbObj) {
 //                $loadedConversation = new Conversation();
 //                $loadedConversation->id = $dbObj->id;
@@ -187,6 +221,24 @@ class Conversation
             return false;
         }
         return true;
+    }
+
+    //Validation Method
+
+    public static function isValidId($id)
+    {
+        if (isset($id) && !empty($id) && $id > 0 && is_numeric($id)) {
+            return true;
+        }
+        return false;
+    }
+
+    public static function isValidSubject($subject)
+    {
+        if (isset($subject) && strlen($subject) > 0 && strlen($subject) < 100) {
+            return true;
+        }
+        return false;
     }
 
 

@@ -39,4 +39,27 @@ class Template
         }
         return $output;
     }
+
+    public static function makeTemplateRows($items, $template, $customOption = null) {
+
+        foreach ($items as $item) {
+            $row = new Template(__DIR__ . $template);
+            foreach($item as $key => $value) {
+                $row->add($key, $value);
+
+                if ($customOption) {
+                    foreach ($customOption as $option) {
+                        foreach ($option as $key => $value) {
+                            $row->add($key, $value);
+                        }
+                    }
+                }
+            }
+
+            $rowsTemplate[] = $row;
+        }
+
+        $rowsContent = self::joinTemplates($rowsTemplate);
+        return $rowsContent;
+    }
 }

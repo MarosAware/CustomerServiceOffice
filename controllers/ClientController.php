@@ -8,30 +8,49 @@ $index = new Template(__DIR__ . '/../templates/index.tpl');
 $logout = new Template(__DIR__ . '/../templates/logout.tpl');
 $content = new Template(__DIR__ . '/../templates/client_content.tpl');
 
+
+$user = unserialize($_SESSION['user']);
+$loggedUserId = $user->getId();
+
+//Function for make template row for message
+
+function makeTemplateRowsForMsg($allMessage) {
+    global $user;
+
+    foreach($allMessage as $message) {
+        $row = new Template(__DIR__ . '/../templates/message.tpl');
+
+        $login = $message['senderId'] === $user->getId() ? 'You' : '<b>SUPPORT</b>';
+        $class = '';
+
+        if ($message['senderId'] !== $user->getId()) {
+            $class = $message['isRead'] == 0 ? " class='notRead'" : '';
+        }
+
+
+        foreach ($message as $key => $value) {
+            $row->add($key, $value);
+            $row->add('login', $login);
+            $row->add('class', $class);
+        }
+        $rowsTemplateMsg[] = $row;
+    }
+    $rowsMessages = Template::joinTemplates($rowsTemplateMsg);
+    return $rowsMessages;
+}
+
+
 if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'client') {
     header('Location: LoginController.php');
 }
 
+
+
 //Tutaj dodaj kod
 
+
 //load All user conversation
-
-$user = unserialize($_SESSION['user']);
-$loggedUserId = $user->getId();
 $allConv = Conversation::loadAllConversationByClientId($user->getId());
-
-
-foreach ($allConv as $conv) {
-    $row = new Template(__DIR__ . '/../templates/conversation_row.tpl');
-    foreach ($conv as $key => $value) {
-        $row->add($key, $value);
-    }
-
-    $rowsTemplate[] = $row;
-}
-
-$rowsContent = Template::joinTemplates($rowsTemplate);
-
 
 
 ////convId GET
@@ -39,20 +58,24 @@ $rowsContent = Template::joinTemplates($rowsTemplate);
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['convId'])) {
     if (strlen($_GET['convId']) > 0 && is_numeric($_GET['convId'])) {
 
-        $oneMessage = Message::loadAllMessagesByConversationId($_GET['convId']);
+        $allMessage = Message::loadAllMessagesByConversationId($_GET['convId']);
 
-//        var_dump($oneMessage);
+        //var_dump($allMessage);
+//
+//        $login = User::getLoginById($allMessage[0]['senderId']);
+//
+//        var_dump($login);
 
-        if ($oneMessage) {
-            foreach($oneMessage as $message) {
-                $row = new Template(__DIR__ . '/../templates/message.tpl');
-                foreach ($message as $key => $value) {
-                    $row->add($key, $value);
+        if ($allMessage) {
+            foreach ($allMessage as $message) {
+                if ($message['senderId'] !== $user->getId()) {
+
+                    $loadedMessage = Message::loadMessageById($message['id']);
+                    $loadedMessage->setIsRead(1);
+                    $loadedMessage->saveToDB();
                 }
-                $rowsTemplateMsg[] = $row;
             }
-
-            $rowsMessages = Template::joinTemplates($rowsTemplateMsg);
+            $rowsMessages = makeTemplateRowsForMsg($allMessage);
         }
 
         $conv = Conversation::loadConversationById($_GET['convId']);
@@ -77,15 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['convId'])) {
     $oneMessage = Message::loadAllMessagesByConversationId($convId);
 
     if ($oneMessage) {
-        foreach($oneMessage as $message) {
-            $row = new Template(__DIR__ . '/../templates/message.tpl');
-            foreach ($message as $key => $value) {
-                $row->add($key, $value);
-            }
-            $rowsTemplateMsg[] = $row;
-        }
 
-        $rowsMessages = Template::joinTemplates($rowsTemplateMsg);
+        $rowsMessages = makeTemplateRowsForMsg($oneMessage);
     }
 
     $convForm = new Template(__DIR__ . '/../templates/single_conversation.tpl');
@@ -93,7 +109,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['convId'])) {
     $convForm->add('senderId', $loggedUserId);
     $content->add('messageForm', '');
     $content->add('convForm', $convForm->parse());
+
 }
+
+
+
+
+
+foreach ($allConv as $conv) {
+    $row = new Template(__DIR__ . '/../templates/conversation_row.tpl');
+
+    $loadedNotRead = Message::loadAllNotReadMsgByConversationId($conv['id']);
+    //var_dump($loadedNotRead);
+
+    $countNotRead = 0;
+    if ($loadedNotRead) {
+        foreach ($loadedNotRead as $msg) {
+            if ($msg['senderId'] !== $user->getId()) {
+                $countNotRead++;
+            }
+        }
+    }
+
+    $newMessage = $countNotRead ? "<td class='notRead'>($countNotRead new)</td>" : '';
+
+    foreach ($conv as $key => $value) {
+        $row->add($key, $value);
+        $row->add('controller', 'ClientController');
+        $row->add('newMessages', $newMessage);
+    }
+
+    $rowsTemplate[] = $row;
+}
+
+$rowsContent = Template::joinTemplates($rowsTemplate);
+
 
 
 $content->add('conversations', $rowsContent);

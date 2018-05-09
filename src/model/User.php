@@ -166,6 +166,28 @@ class User
         return true;
     }
 
+    public static function getLoginById($id)
+    {
+        $stmt = self::$dbConn->prepare(
+            "SELECT login FROM `user` WHERE id=:id"
+        );
+
+        $result = $stmt->execute(['id' => $id]);
+        $row = $stmt->fetch(PDO::FETCH_OBJ);
+
+        if ($result === true && $stmt->rowCount() > 0) {
+            return $row->login;
+//            $dbObj = $stmt->fetch(PDO::FETCH_OBJ);
+//            $loadedUser = new User();
+//            $loadedUser->id = $dbObj->id;
+//            $loadedUser->login = $dbObj->login;
+//            $loadedUser->password = $dbObj->password;
+//            $loadedUser->role_id = $dbObj->role_id;
+//            return $loadedUser;
+        }
+        return null;
+    }
+
     //Static validation method
 
     public static function isValidLogin($login)
