@@ -14,12 +14,6 @@ if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'client') {
     header('Location: LoginController.php');
 }
 
-if (isset($_SESSION['msg'])) {
-    $index->add('msg', $_SESSION['msg']);
-    unset($_SESSION['msg']);
-} else {
-    $index->add('msg', '');
-}
 
 $user = unserialize($_SESSION['user']);
 $loggedUserId = $user->getId();
@@ -102,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['convId'])) {
         }
 
     } else {
-        echo 'Invalid GET parameter';
+        $msg = '<p class="alert alert-danger">Invalid GET parameter</p>';
     }
 
 } else {
@@ -143,6 +137,18 @@ if ($allConv) {
     }
 
     $rowsContent = Template::joinTemplates($rowsTemplate);
+}
+
+if (isset($_SESSION['msg'])) {
+    $index->add('msg', $_SESSION['msg']);
+    unset($_SESSION['msg']);
+} else {
+    if (isset($msg)) {
+        $index->add('msg', $msg);
+    } else {
+        $index->add('msg', '');
+    }
+    $index->add('msg', '');
 }
 
 

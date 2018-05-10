@@ -54,9 +54,7 @@ if (isset($_SESSION['msg'])) {
     unset($_SESSION['msg']);
 } else {
     if (isset($msg)) {
-        $_SESSION['msg'] = $msg;
-        $index->add('msg', $_SESSION['msg']);
-        unset($_SESSION['msg']);
+        $index->add('msg', $msg);
     } else {
         $index->add('msg', '');
     }

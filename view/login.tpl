@@ -14,7 +14,7 @@
             </div>
             <button type="submit" class="btn btn-default">Zaloguj</button>
         </form><br>
-        <h2>If you don't have an account:</h2>
+        <h3>If you don't have an account:</h3>
         <a href="../controllers/RegisterController.php" class="btn btn-primary">Register</a>
     </div>
 </div>

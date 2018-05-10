@@ -21,6 +21,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['convId'])) {
         $msg = '<p class="alert alert-danger">Invalid input. Subject must be 1-99 character.</p>';
     }
 
+    if (isset($msg)) {
+        $_SESSION['msg'] = $msg;
+    }
+
+    header('Location: ClientController.php');
+
 }
 
 //Assign support user to conversation
@@ -46,10 +52,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['convId'])) {
         $msg = '<p class="alert alert-danger">Invalid input. Support and Conversation id must be numeric value.</p>';
     }
 
-}
 
-if (isset($msg)) {
-    $_SESSION['msg'] = $msg;
-}
+    if (isset($msg)) {
+        $_SESSION['msg'] = $msg;
+    }
 
-header('Location: ' . $_SERVER['HTTP_REFERER']);
+    header('Location: SupportController.php');
+}

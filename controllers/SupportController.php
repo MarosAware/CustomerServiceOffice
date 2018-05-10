@@ -95,7 +95,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['convId'])) {
 
 
 
-
         //Catching GET request with key 'supportId', and generate single message add form
         if (!empty($_GET['supportId']) && is_numeric($_GET['supportId'])) {
             $messageForm = new Template(__DIR__ . '/../view/single_message_add.tpl');
@@ -105,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['convId'])) {
             $messageForm->add('senderId', $user->getId());
             $content->add('messageForm', $messageForm->parse());
 
-        //If we don't have key 'supportId' in GET request generate conversation assign button
+            //If we don't have key 'supportId' in GET request generate conversation assign button
         } else {
 
             $assignTemplate = new Template(__DIR__ . '/../view/assign_button.tpl');
@@ -116,8 +115,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['convId'])) {
 
         }
 
+
     } else {
-        echo 'Invalid GET parameter.';
+        $msg = '<p class="alert alert-danger">Invalid GET parameter.</p>';
     }
 }
 
@@ -153,6 +153,18 @@ if ($allAssignedConv) {
         $rowsTemplate[] = $row;
     }
     $rowsContentAssignedConv = Template::joinTemplates($rowsTemplate);
+}
+
+if (isset($_SESSION['msg'])) {
+    $index->add('msg', $_SESSION['msg']);
+    unset($_SESSION['msg']);
+} else {
+    if (isset($msg)) {
+        $index->add('msg', $msg);
+    } else {
+        $index->add('msg', '');
+    }
+    $index->add('msg', '');
 }
 
 
