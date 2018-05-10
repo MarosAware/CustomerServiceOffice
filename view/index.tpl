@@ -15,9 +15,14 @@
             <div class="row">
                 <div class="navbar navbar-default">
                     <div class="navbar-header">
-                        <a href="../controllers/LoginController.php" class="navbar-brand">Biuro Obslugi Klienta</a>
+                        <a href="../controllers/LoginController.php" class="navbar-brand">Customer Service Office</a>
                     </div>
                     {{logout}}
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        {{msg}}
+                    </div>
                 </div>
             </div>
             {{content}}

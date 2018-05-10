@@ -14,3 +14,7 @@ a {
     color:green;
     font-weight:700;
 }
+
+.margin {
+    margin:5px 25px 0 0;
+}

@@ -3,14 +3,12 @@ session_start();
 
 require __DIR__ . '/../src/Template.php';
 require __DIR__ . '/../src/Database.php';
-//Tutaj dodaj kod
 
 
 if (isset($_SESSION['user'])) {
     header('Location: LoginController.php');
 }
 
-//odebranie danych, walidacja
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $login = $_POST['login'];
@@ -29,32 +27,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             //TODO: Set some message on success
             header('Location: LoginController.php');
         } else {
-            echo 'User already exists. Pick other login.';
+            $msg = '<p class="alert alert-danger">User already exists. Pick other login.</p>';
         }
 
     } else {
-        echo 'Your login or password empty.';
+        $msg = '<p class="alert alert-danger">Your login or password empty.</p>';
     }
 }
 
-//polaczenie do db
 
+$index = new Template(__DIR__ . '/../view/index.tpl');
+$content = new Template(__DIR__ . '/../view/register.tpl');
 
-
-//dodanie wpisu do odpowiedniej tabeli
-
-
-//zapis
-
-
-
-
-$index = new Template(__DIR__ . '/../templates/index.tpl');
-
-$content = new Template(__DIR__ . '/../templates/register.tpl');
-
+$index->add('msg', isset($msg) ? $msg : '');
 $index->add('content', $content->parse());
 $index->add('logout', '');
 
 echo $index->parse();
-

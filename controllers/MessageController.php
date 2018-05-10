@@ -3,9 +3,7 @@ session_start();
 
 require __DIR__ . '/../src/Database.php';
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    var_dump($_POST);
 
     $message = $_POST['message'];
     $convId = $_POST['convId'];
@@ -21,16 +19,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $msg->setMessage($message);
 
             if ($msg->saveToDB()) {
-                header('Location: LoginController.php');
+                $msg = '<p class="alert alert-success">Message created and sent.</p>';
             } else {
-                echo 'Some problem occurred. Try again later.';
+                $msg = '<p class="alert alert-danger">Some problem occurred. Try again later.</p>';
             }
         } else {
-            echo 'Invalid message. Valid message is 1-254 characters.';
+            $msg = '<p class="alert alert-danger">Invalid message. Valid message is 1-254 characters.</p>';
         }
 
     } else {
-        echo 'Some input empty or invalid.';
+        $msg = '<p class="alert alert-danger">Some input empty or invalid.</p>';
     }
 
 }
+
+if (isset($msg)) {
+    $_SESSION['msg'] = $msg;
+}
+
+header('Location: ' . $_SERVER['HTTP_REFERER']);

@@ -1,21 +1,8 @@
 <?php
-
 session_start();
+
 require __DIR__ . '/../src/Template.php';
 require __DIR__ . '/../src/Database.php';
-
-//$user = User::loadUserById(2);
-//$user->setPassword('test');
-//$user->saveToDB();
-//var_dump($user->getPassword());
-//die();
-
-//unset($_SESSION['role']);
-//unset($_SESSION['user']);
-//die();
-
-//Tutaj dodaj kod
-//Sprawdzic czy uzytkownik jest zalogowany - odpowiedni kontroler lub strona logowania
 
 function decideWhereToRedirectByRole($userRole) {
 
@@ -31,7 +18,8 @@ if (isset($_SESSION['user']) && isset($_SESSION['role'])) {
 }
 
 
-//Odebrać logowanie POST
+
+//Sign in
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $login = $_POST['login'];
@@ -48,20 +36,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             decideWhereToRedirectByRole($_SESSION['role']);
         } else {
-            echo 'Invalid login or password';
+            $msg = '<p class="alert alert-danger">Invalid login or password.</p>';
         }
 
     } else {
-        echo 'Your login or password empty.';
+        $msg = '<p class="alert alert-danger">Your login or password empty.</p>';
     }
 
 }
 
 
+$index = new Template(__DIR__ . '/../view/index.tpl');
+$content = new Template(__DIR__ . '/../view/login.tpl');
 
-$index = new Template(__DIR__ . '/../templates/index.tpl');
+if (isset($_SESSION['msg'])) {
+    $index->add('msg', $_SESSION['msg']);
+    unset($_SESSION['msg']);
+} else {
+    if (isset($msg)) {
+        $_SESSION['msg'] = $msg;
+        $index->add('msg', $_SESSION['msg']);
+        unset($_SESSION['msg']);
+    } else {
+        $index->add('msg', '');
+    }
 
-$content = new Template(__DIR__ . '/../templates/login.tpl');
+}
+
 
 $index->add('content', $content->parse());
 $index->add('logout', '');

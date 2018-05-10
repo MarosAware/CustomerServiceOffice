@@ -13,19 +13,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['convId'])) {
 
     if ($conv->setClientId($senderId) && $conv->setSubject($subject)) {
         if ($conv->saveToDB()) {
-            header('Location: LoginController.php');
+            $msg = '<p class="alert alert-success">New conversation created.</p>';
         } else {
-            echo 'Something goes wrong. Try again later.';
+            $msg = '<p class="alert alert-danger">Something goes wrong. Try again later.</p>';
         }
     } else {
-        echo 'Invalid input. Subject must be 1-99 character.';
+        $msg = '<p class="alert alert-danger">Invalid input. Subject must be 1-99 character.</p>';
     }
-
-
-    if ($conv->saveToDB()) {
-        header('Location: LoginController.php');
-    }
-
 
 }
 
@@ -33,31 +27,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['convId'])) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['convId'])) {
 
-
-
     $supportId = (int) $_POST['supportId'];
     $convId = $_POST['convId'];
-
-//    var_dump($supportId);
-//    var_dump($convId);
-//
-//    var_dump($_POST);
 
     if (Conversation::isValidId($supportId) && Conversation::isValidId($convId)) {
 
         $loadedConversation = Conversation::loadConversationById($convId);
         $loadedConversation->setSupportId($supportId);
 
-//        var_dump($loadedConversation);
         if ($loadedConversation->saveToDB()) {
 
-            header('Location: LoginController.php');
+            $msg = '<p class="alert alert-success">Conversation assigned successfully.</p>';
         } else {
-            echo 'Something goes wrong. Try again later.';
+            $msg = '<p class="alert alert-danger">Something goes wrong. Try again later.</p>';
         }
 
     } else {
-        echo 'Invalid input. Support and Conversation id must be numeric value.';
+        $msg = '<p class="alert alert-danger">Invalid input. Support and Conversation id must be numeric value.</p>';
     }
 
 }
+
+if (isset($msg)) {
+    $_SESSION['msg'] = $msg;
+}
+
+header('Location: ' . $_SERVER['HTTP_REFERER']);
