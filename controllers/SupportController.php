@@ -167,7 +167,8 @@ if (isset($_SESSION['msg'])) {
     $index->add('msg', '');
 }
 
-$index->add('script', '');
+$script = '<script src="../js/conversationSupport.js"></script>';
+$index->add('script', $script);
 $content->add('messages', isset($rowsContentAllMsg) ? $rowsContentAllMsg : '');
 $content->add('myConversations', isset($rowsContentAssignedConv) ? $rowsContentAssignedConv : '');
 $content->add('openConversations', isset($rowsContentOpenConv) ? $rowsContentOpenConv : '');

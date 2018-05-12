@@ -10,7 +10,7 @@
             <h3>My conversations</h3>
         </div>
         <div>
-            <table class="table">
+            <table class="table myConv">
                 <tr>
                     <th>Subject</th>
                 </tr>
@@ -23,7 +23,7 @@
             <h3>Open conversations</h3>
         </div>
         <div>
-            <table class="table">
+            <table class="table openConv">
                 <tr>
                     <th>Subject</th>
                     <th></th>

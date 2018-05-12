@@ -199,7 +199,7 @@ class Conversation implements JsonSerializable
     {
         //$tab = [];
         $result = self::$dbConn->query(
-            "SELECT * FROM `conversation` WHERE supportId IS NULL ORDER BY id DESC"
+            "SELECT * FROM `conversation` WHERE supportId IS NULL ORDER BY id ASC"
         );
 
         $rows = $result->fetchAll(PDO::FETCH_ASSOC);
