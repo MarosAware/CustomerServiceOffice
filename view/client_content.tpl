@@ -10,7 +10,7 @@
             <h3>All your question</h3>
         </div>
         <div>
-            <table class="table">
+            <table class="table convRow">
                 <tr>
                     <th>Subject</th>
                 </tr>

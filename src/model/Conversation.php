@@ -1,6 +1,6 @@
 <?php
 
-class Conversation
+class Conversation implements JsonSerializable
 {
     private $id, $clientId, $supportId, $subject;
     public static $dbConn;
@@ -132,6 +132,16 @@ class Conversation
             return $loadedConversation;
         }
         return null;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->id,
+            'clientId' => $this->clientId,
+            'supportId' => $this->supportId,
+            'subject' => $this->subject
+        ];
     }
 
     //Load all method load all rows (assoc) and return it

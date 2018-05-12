@@ -152,9 +152,11 @@ if (isset($_SESSION['msg'])) {
 }
 
 
+$script = '<script src="../js/conversationClient.js"></script>';
 $content->add('conversations', isset($rowsContent) ? $rowsContent : '');
 $content->add('messages', isset($rowsMessages) ? $rowsMessages : '');
 $index->add('logout', $logout->parse());
 $index->add('content', $content->parse());
+$index->add('script', $script);
 
 echo $index->parse();

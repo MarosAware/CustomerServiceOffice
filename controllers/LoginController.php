@@ -61,7 +61,7 @@ if (isset($_SESSION['msg'])) {
 
 }
 
-
+$index->add('script', '');
 $index->add('content', $content->parse());
 $index->add('logout', '');
 

@@ -24,8 +24,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user->setPassword($password);
             $user->saveToDB();
 
+
             //TODO: Set some message on success
-            header('Location: LoginController.php');
+
+            $msg = '<p class="alert alert-success">You account was created successful.</p>';
+            $_SESSION['msg'] = $msg;
+                header('Location: LoginController.php');
         } else {
             $msg = '<p class="alert alert-danger">User already exists. Pick other login.</p>';
         }
@@ -39,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $index = new Template(__DIR__ . '/../view/index.tpl');
 $content = new Template(__DIR__ . '/../view/register.tpl');
 
+$index->add('script', '');
 $index->add('msg', isset($msg) ? $msg : '');
 $index->add('content', $content->parse());
 $index->add('logout', '');

@@ -9,6 +9,7 @@
                 integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
                 crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     </head>
     <body>
         <div class="container">
@@ -20,7 +21,7 @@
                     {{logout}}
                 </div>
                 <div class="row">
-                    <div class="col-md-12 text-center">
+                    <div class="col-md-12 text-center alertMsg">
                         {{msg}}
                     </div>
                 </div>
@@ -28,5 +29,6 @@
             {{content}}
             </div>
         </div>
+        {{script}}
     </body>
 </html>
