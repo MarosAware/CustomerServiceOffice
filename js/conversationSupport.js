@@ -2,12 +2,12 @@ $(function() {
 
     var alertMsg = $('.alertMsg');
 
-    function makeConRow(data) {
+    function makeConRow(data, count) {
         var newRow = `
 <tr>
     <td>
         <a href="../controllers/SupportController.php?convId=${data.success[0].id}&supportId=${data.success[0].supportId}">${data.success[0].subject}</a><br>
-        {{newMessages}}
+        <span class='notRead'> (${count} new)</span>
     </td>
 </tr>`;
 
@@ -30,6 +30,9 @@ $(function() {
             convId: convId
         };
 
+
+        var count = $('.openConv').find(`span[data-id = '${convId}']`).data('count');
+
         $.ajax({
             url: 'http://localhost/WAR_PHP_S_12_Warszata_Wolny_Tydzien/controllers/ConversationController.php',
             method: 'POST',
@@ -37,7 +40,7 @@ $(function() {
             contentType: 'application/json',
             dataType: 'json'
         }).done(function(data) {
-            makeConRow(data);
+            makeConRow(data, count);
 
             var lastInsertedElement = $('.myConv').find('tr td a').attr('href');
             lastInsertedElement = lastInsertedElement.slice(0,-1);

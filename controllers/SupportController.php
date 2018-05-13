@@ -48,9 +48,39 @@ function makeTemplateRowsForMsg($allMessage) {
 //Load all open conversation and make template rows for them
 $openConv = Conversation::loadAllOpenConversation();
 $templateConversation = '/../view/conversation_row.tpl';
-$customOptionConv = [['controller' => 'SupportController'], ['newMessages' => '']];
+
 if ($openConv) {
-    $rowsContentOpenConv = Template::makeTemplateRows($openConv, $templateConversation, $customOptionConv);
+
+    //Load all conversation rows assigned to user
+    foreach ($openConv as $conv) {
+        $row = new Template(__DIR__ . '/../view/conversation_row.tpl');
+
+
+        //Load all not read message and count all message that user is not the author
+        $loadedNotRead = Message::loadAllNotReadMsgByConversationId($conv['id']);
+        $countNotRead = 0;
+        if ($loadedNotRead) {
+            foreach ($loadedNotRead as $msg) {
+                if ($msg['senderId'] !== $user->getId()) {
+                    $countNotRead++;
+                }
+            }
+        }
+
+        $element = "<span class='hide' data-id='{$conv['id']}' data-count='$countNotRead'></span>";
+
+        foreach ($conv as $key => $value) {
+            $row->add($key, $value);
+            $row->add('controller', 'SupportController');
+            $row->add('newMessages', $element);
+        }
+        $rowsTemplate[] = $row;
+    }
+
+    $rowsContentOpenConv = Template::joinTemplates($rowsTemplate);
+
+
+
 }
 
 
