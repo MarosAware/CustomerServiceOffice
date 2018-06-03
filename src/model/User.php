@@ -224,7 +224,6 @@ class User
         if ($user) {
 
             if (password_verify($password, $user->password) === true) {
-                var_dump($user->password);
                 //If exists and password is correct return this user
                 return $user;
             } else {//incorrect password

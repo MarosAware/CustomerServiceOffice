@@ -19,6 +19,7 @@ if (isset($_SESSION['user']) && isset($_SESSION['role'])) {
 
 
 
+
 //Sign in
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
